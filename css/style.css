@@ -1,0 +1,160 @@
+/* =============================================================================
+
+	STYLE.CSS
+	version: 1.6
+	updated: 2009-03-06, 13:00 GMT+1
+
+============================================================================= */
+
+/* =============================================================================
+HTML - styles
+============================================================================= */
+
+body {background-color:#eaeaea; color:#303030;}
+a {color:#213F99;}
+a:hover, a:active, a:focus {color:#df0000;}
+#content h2 {color:#213F99;}
+#content table {border:2px solid #cfcfcf;}
+#content table th {border-right:1px solid #0074B3; background-color:#213F99; color:#fff;}
+#content table td {border:1px solid #cfcfcf;}
+#content table tr.bg td {background-color:#e8f6ff;}
+#content dl dt {color:#df0000;}
+#content fieldset {border:1px solid #ccc;}
+#content legend {background:#FFF; color:#213F99;}
+#content acronym, #content abbr, #content .help {border-bottom:1px dotted #cfcfcf;}
+
+/* =============================================================================
+HTML - without styles
+============================================================================= */
+
+table.nostyle th, dl.nostyle dt {color:#303030 !important;}
+
+/* =============================================================================
+LAYOUT
+============================================================================= */
+
+#tray {background-color:#303030; color:#cfcfcf;}
+#tray a, #tray strong {color:#fff;}
+#tray a:hover, #tray a:active, #tray a:focus {color:#b4e3ff;}
+#menu {background-color:#213F99;}
+#menu ul li a {background-color:#fff; color:#303030;}
+#menu ul li a span {background-color:#FFF;}
+#menu ul li a:hover, #menu ul li a:active, #menu ul li a:focus, #menu ul li#menu-active a {background-color:#FFF; color:#df0000;}
+#menu ul li a:hover span, #menu ul li#menu-active a span {background-color:#FFF;}
+#menu ul li#menu-active a {color:#213F99;}
+#menu ul.f-right a {color:#df0000;}
+#content {border:1px solid #afafaf; background:#fff;}
+#footer {color:#707070;}
+#footer a {color:#707070;}
+#footer a:hover, #footer a:active, #footer a:focus {color:#303030;}
+
+/* =============================================================================
+OTHERS
+============================================================================= */
+
+#aside #logo img {border:1px solid #bfbfbf;}
+#aside #search fieldset a {color:#303030;}
+#aside #search fieldset {border:1px solid #bfbfbf;}
+#aside #search fieldset a:hover, #aside #search fieldset a:active, #aside #search fieldset a:focus {color:#df0000;}
+#aside #btn-create a {background-color:#fff; color:#303030;}
+#aside #btn-create a span {background-color:#fff;}
+#aside ul li a {border-bottom:1px solid #cfcfcf; color:#303030;}
+#aside ul li#submenu-active a {background-color:#df0000; color:#fff;}
+#aside ul li a:hover, #aside ul li a:active, #aside ul li a:focus {color:#df0000;}
+#aside ul ul li a, #aside ul li#submenu-active ul li a {border-bottom:1px solid #cfcfcf; background-color:#f5f5f5; color:#303030;}
+#aside ul li ul li a {background-color:#e3e3e3;}
+#aside ul ul li a:hover, #aside ul ul li a:active, #aside ul ul li a:focus, #aside ul li#submenu-active ul li a:hover, #aside ul li#submenu-active ul li a:active, #aside ul li#submenu-active ul li a:focus {color:#df0000;}
+#content h1 {background-color:#303030; color:#fff;}
+#content .tabs {border-bottom:1px solid #cfcfcf;}
+#content .tabs a {color:#303030;}
+#content .tabs a span {color:#303030;}
+#content .tabs .ui-tabs-selected a {color:#fff;}
+#content .tabs .ui-tabs-selected a span {color:#fff;}
+.high {color:#df0000;}
+.high-bg {background:#FFB;}
+.low {color:#707070;}
+
+/* =============================================================================
+MESSAGES
+============================================================================= */
+
+.msg.warning {border:2px solid #F2DD8C; background-color:#FFF5CC;}
+.msg.warning a {color:#df0000;} .msg.warning a:hover, .msg.warning a:active, .msg.warning a:focus {color:#303030;}
+.msg.info {border:2px solid #B8E2FB; background-color:#E8F6FF;}
+.msg.done {border:2px solid #BBDF8D; background-color:#EAF7D9;}
+.msg.error {border:2px solid #FFAEAE; background-color:#FEEBEB;}
+
+
+
+
+/*Drag & Drop*/
+/*
+
+Darko Bunic
+http://www.redips.net/
+Jan, 2010.
+
+*/
+body {
+	font-family: arial;
+}
+
+/* add bottom margin between tables */
+#table1,#table2 {
+	margin-bottom: 20px;
+}
+
+/* drag container (contains two tables) */
+#drag {
+	margin: auto;
+	width: 730px;
+}
+
+/* drag objects (DIV inside table cells) */
+.drag {
+	position: relative;
+	cursor: move;
+	margin: 2px auto;
+	z-index: 10;
+	background-color: #f0f0f0;
+	text-align: left;
+	padding: 5px;
+	font-size: 12px;
+	width: 190px;
+	/* round corners for FF, Chrome, Safari (except IE) */
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	/* shadow for FF, Chrome, Safari (except IE)*/
+	/*
+	-moz-box-shadow: 4px 4px 8px #444;
+	-webkit-box-shadow: 4px 4px 8px #444;
+	box-shadow: 4px 4px 8px #444;
+	*/
+}
+
+/* drag objects border for the first table */
+.t1 {
+	border: 1px solid #9B9EA2;;
+}
+
+/* tables */
+div#drag table {
+	background-color: #e0e0e0;
+	border-collapse: collapse;
+}
+
+/* table cells */
+div#drag td {
+	height: 50px;
+	border: 1px solid white;
+	text-align: center;
+	font-size: 12px;
+	padding: 2px;
+}
+
+/* message cell (marked as forbidden) */
+.mark {
+	color: white;
+	background-color: SteelBlue;
+}
