@@ -111,13 +111,17 @@ $exam = mysql_fetch_assoc(mysql_query("select * from exam where exam_id=".$_GET[
 			<?php $departments = ['1','2','3','4']; ?>
 			<table width="100%">
 
-				<?php $seat_no = 1; ?>
+				<?php $seat_no = 1; 
+						$seat_arrange = [];
+				?>
                 <?php for( $r=1; $r <= $rows; $r++){ ?>
 		        <tr width="<?php echo 100/$columns; ?>"%>
 		        	<?php for($c=1; $c <= $columns; $c++) { ?>
 		            	<td> 
 		            		<?php 
-		            		echo 'DEPT '.findASeat($r,$rows,$c,$columns,$seat_no);
+		            		$seat_department = findASeat($r,$rows,$c,$columns,$seat_no,$seat_arrange);
+		            		echo 'DEPT '.$seat_department;
+		            		$seat_arrange[$seat_no] = $seat_department;
 		            		?>
 							<?php  //echo $seat_no; ?>
 		            	</td> <?php $seat_no++; } ?>
@@ -207,11 +211,8 @@ $('document').ready(function(){
 </script>
 
 <?php 
-function findASeat($r,$rows,$c,$columns,$seat_no) {
-	//var_dump($seat_arrange);
-	if(empty($seat_arrange)) {
-		$seat_arrange = [];
-	}
+function findASeat($r,$rows,$c,$columns,$seat_no,$seat_arrange=array()) {
+
 
 	//find adjecent seats
 	$left_seat = $seat_no-1;
@@ -273,8 +274,8 @@ function findASeat($r,$rows,$c,$columns,$seat_no) {
 
 	//check if exists in adjecent
 
-	$seat_arrange[$seat_no] = $selected_dept;
-	var_dump($seat_arrange);
+	//$seat_arrange[$seat_no] = $selected_dept;
+	//var_dump($seat_arrange);
 
 	return $selected_dept;
 }
@@ -282,12 +283,18 @@ function findASeat($r,$rows,$c,$columns,$seat_no) {
 function selectDept($l,$lt,$mt,$mb,$r,$rt,$rb) {
 	$departments = ['1','2','3','4'];
 
-	$chk_depts = [];
+	// $chk_depts = [];
 	$selected_departments = [$l,$lt,$mt,$mb,$r,$rt,$rb]; //print_r($selected_departments);
 
-	$chk_depts = array_diff($departments, $selected_departments);
-	//print_r($chk_depts); exit;
-	return $dept_id = array_rand($chk_depts);
+	// $chk_depts = array_diff($departments, $selected_departments);
+	// print_r($chk_depts); //exit;
+	// return $dept_id = array_rand($chk_depts);
+
+	foreach($departments as $d) {
+		if(!in_array($d, $selected_departments)) {
+			return $d; 
+		}
+	}
 }
 ?>
 </body>
