@@ -6,6 +6,7 @@ if(!isset($_SESSION['Admin_ID'])){header("location:index.php");}
 
 if(isset($_POST['room_id']) && $_POST['room_id']!='')
 {
+
 	/**
 	* throwing error default room
 	* added later
@@ -18,9 +19,20 @@ if(isset($_POST['room_id']) && $_POST['room_id']!='')
 
 	for($i=0;$i<20;$i++){    
 		if(isset($_POST['student_id'][$i])){
-			$check=mysql_query("select * from exam_seat where exam_id=".$_GET['exam_id']." and student_id=".$_POST['student_id'][$i]." ") ;
-			if(mysql_num_rows($check)==0)
-			mysql_query("update exam_seat set student_id='".$_POST['student_id'][$i]."' where exam_id='".$_GET['exam_id']."' and room_id='".$_REQUEST['room_id']."' and seat_no='".($i+1)."' ") ;
+			$check=mysql_query("select * from exam_seat where exam_id=".$_GET['exam_id']." and student_id=".$_POST['student_id'][$i]." ") ; 
+			if(mysql_num_rows($check)==0) {
+				$qry = "update exam_seat SET 
+
+				student_id='".$_POST['student_id'][$i]."',
+				exam_row = '".$_POST['exam_row'][$i]."',
+				exam_column='".$_POST['exam_column'][$i]."',
+
+			   WHERE exam_id='".$_GET['exam_id']."' and room_id='".$_REQUEST['room_id']."' and seat_no='".($i+1)."' ";
+
+				mysql_query($qry) ;
+			}else{
+				//insert 
+			}
 		}
 	}
 	if(isset($_REQUEST['faculty_id'])):
@@ -108,19 +120,41 @@ $exam = mysql_fetch_assoc(mysql_query("select * from exam where exam_id=".$_GET[
 				  </td>
                 </tr>
 			</table>
-			<?php $departments = ['1','2','3','4']; ?>
 			<table width="100%">
 
 				<?php $seat_no = 1; 
-						$seat_arrange = [];
+					  $seat_arrange = [];
 				?>
                 <?php for( $r=1; $r <= $rows; $r++){ ?>
-		        <tr width="<?php echo 100/$columns; ?>"%>
+		        <tr width="<?php echo 100/$columns; ?>"%  class="bgg3" onmouseover="this.className='bgg2'" onmouseout="this.className='bgg3'">
 		        	<?php for($c=1; $c <= $columns; $c++) { ?>
 		            	<td> 
 		            		<?php 
 		            		$seat_department = findASeat($r,$rows,$c,$columns,$seat_no,$seat_arrange);
-		            		echo 'DEPT '.$seat_department;
+
+		            		if($seat_department==1){ 
+								$dd='PE/';$color='orange;';
+							}else if($seat_department==2){
+								$dd='ME/';$color='lightgreen;';
+							}else if($seat_department==3){
+									$dd='CSE/';$color='lightyellow;';
+							}else if($seat_department==4){
+								$dd='ECE/';$color='lightgrey;';
+							}
+
+		            		//get the students
+		            		$query=mysql_query("select * from student where department_id=$seat_department  and semester=".$exam['semester']."  ");
+
+		            		?>
+							<input type="hidden" name="exam_row[]" value="<?php echo $r; ?>">
+							<input type="hidden" name="exam_column[]" value="<?php echo $c; ?>">
+
+		            		<select name="student_id[]" style="min-width:200px;width:200px;">
+		            		<option value="-1" selected="selected" disabled="disabled">Select Student</option>
+							<?php
+								while($option=mysql_fetch_assoc($query)){  
+									echo '<option value="'.$option['student_id'].'">'.$option['name'].' &nbsp;&nbsp;('.$dd.$option['student_id'].')</option>';
+								} 
 		            		$seat_arrange[$seat_no] = $seat_department;
 		            		?>
 							<?php  //echo $seat_no; ?>
@@ -130,46 +164,7 @@ $exam = mysql_fetch_assoc(mysql_query("select * from exam where exam_id=".$_GET[
 				
 		        
 
-                <tr>
-				<?php 
-					$department_id=1;
-					while($row=mysql_fetch_assoc($cmss)){  
-						if($department_id>4) $department_id=1;
-					$query=mysql_query("select * from student where department_id=$department_id  and semester=".$exam['semester']."  ");
-					if($department_id==1){ 
-						$dd='PE/';$color='orange;';
-					}else if($department_id==2){
-						$dd='ME/';$color='lightgreen;';
-					}else if($department_id==3){
-							$dd='CSE/';$color='lightyellow;';
-					}else if($department_id==4){
-						$dd='ECE/';$color='lightgrey;';
-					}?>
-                <tr class="bgg3" onmouseover="this.className='bgg2'" onmouseout="this.className='bgg3'" style="background-color:<?php echo $color;?>">
-                  <td align="left" style="vertical-align:top;" nowrap="nowrap">Seat No :<?php echo $default_room.' - '.$row['seat_no'];?></td>
-                  <td colspan="2" align="left" style="vertical-align:top;">
-				  <select name="student_id[]" style="min-width:200px;width:200px;">
-					<?php 
-					if(isset($row['name'])){ 
-						while($option=mysql_fetch_assoc($query)){ 
-							if($row['student_id']==$option['student_id']) $selected_value='selected'; else $selected_value=''; 
-							echo '<option '.$selected_value.'  value="'.$option['student_id'].'">'.$option['name'].' &nbsp;&nbsp;('.$dd.$option['student_id'].')</option>';
-						} 
-					}else{
-						echo '<option disabled selected value="">Not Set</option>';
-						while($option=mysql_fetch_assoc($query)){ 
-							$filter=mysql_query("select * from exam_seat where student_id=".$option['student_id']." and exam_id=".$_GET['exam_id']."  ");
-							if(!mysql_num_rows($filter)){ 
-								echo '<option '.$selected_value.'  value="'.$option['student_id'].'">'.$option['name'].' &nbsp;&nbsp;('.$dd.$option['student_id'].')</option>';
-							}
-						} 
-					}
-					?>
-				  </select>
-				  &nbsp;&nbsp;&nbsp;<?php if(isset($row['name'])) echo $row['name'].'('.$row['student_id'].')';?>
-				  </td>
-                </tr>
-				<?php $department_id++;}?>
+                
                    
                 <tr class="bgg3" onmouseover="this.className='bgg2'" onmouseout="this.className='bgg3'">
                   <td align="left" style="vertical-align:top;">&nbsp;</td>
