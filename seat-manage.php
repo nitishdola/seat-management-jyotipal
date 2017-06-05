@@ -108,61 +108,23 @@ $exam = mysql_fetch_assoc(mysql_query("select * from exam where exam_id=".$_GET[
 				  </td>
                 </tr>
 			</table>
-
+			<?php $departments = ['1','2','3','4']; ?>
 			<table width="100%">
 
-
+				<?php $seat_no = 1; ?>
                 <?php for( $r=1; $r <= $rows; $r++){ ?>
 		        <tr width="<?php echo 100/$columns; ?>"%>
 		        	<?php for($c=1; $c <= $columns; $c++) { ?>
-		            	<td> ROW - <?php echo $r.' COLUMN - '.$c; ?>
-		           		
-		           		<?php 
-		           		$department_id=1;
-						while($row=mysql_fetch_assoc($cmss)){  
-							if($department_id>4) $department_id=1;
-							$query=mysql_query("select * from student where department_id=$department_id  and semester=".$exam['semester']."  ");
-
-							if($department_id==1){ 
-								$dd='PE/';$color='orange;';
-							}else if($department_id==2){
-								$dd='ME/';$color='lightgreen;';
-							}else if($department_id==3){
-									$dd='CSE/';$color='lightyellow;';
-							}else if($department_id==4){
-								$dd='ECE/';$color='lightgrey;';
-							}
-						?>
-						<select name="student_id[]" style="min-width:200px;width:200px;">
-							<?php 
-							if(isset($row['name'])){ 
-								while($option=mysql_fetch_assoc($query)){ 
-									if($row['student_id']==$option['student_id']) $selected_value='selected'; else $selected_value=''; 
-									echo '<option '.$selected_value.'  value="'.$option['student_id'].'">'.$option['name'].' &nbsp;&nbsp;('.$dd.$option['student_id'].')</option>';
-								} 
-							}else{
-								echo '<option disabled selected value="">Not Set</option>';
-								while($option=mysql_fetch_assoc($query)){ 
-									$filter=mysql_query("select * from exam_seat where student_id=".$option['student_id']." and exam_id=".$_GET['exam_id']."  ");
-									if(!mysql_num_rows($filter)){ 
-										echo '<option '.$selected_value.'  value="'.$option['student_id'].'">'.$option['name'].' &nbsp;&nbsp;('.$dd.$option['student_id'].')</option>';
-									}
-								} 
-							}
-							?>
-						  </select>
-							
-						<?php
-						}
-						?>
-
-					<? } ?>
-					
-		            </td>
+		            	<td> 
+		            		<?php 
+		            		echo 'DEPT '.findASeat($r,$rows,$c,$columns,$seat_no);
+		            		?>
+							<?php  //echo $seat_no; ?>
+		            	</td> <?php $seat_no++; } ?>
 		            <?php } ?>
 		        </tr>
-
-		        <?php } ?>
+				
+		        
 
                 <tr>
 				<?php 
@@ -243,5 +205,90 @@ $('document').ready(function(){
     });
 });
 </script>
+
+<?php 
+function findASeat($r,$rows,$c,$columns,$seat_no) {
+	//var_dump($seat_arrange);
+	if(empty($seat_arrange)) {
+		$seat_arrange = [];
+	}
+
+	//find adjecent seats
+	$left_seat = $seat_no-1;
+	if(isset($seat_arrange[$left_seat])) {
+		$left_seat_dept = $seat_arrange[$left_seat];
+	}else{
+		$left_seat_dept = -1;
+	}
+
+	$left_top  = $left_seat-$columns;
+	if(isset($seat_arrange[$left_top])) {
+		$left_top_seat_dept = $seat_arrange[$left_top];
+	}else{
+		$left_top_seat_dept = -1;
+	}
+
+	$left_bottom  = $left_seat+$columns;
+	if(isset($seat_arrange[$left_bottom])) {
+		$left_bottm_seat_dept = $seat_arrange[$left_bottom];
+	}else{
+		$left_bottm_seat_dept = -1;
+	}
+
+	$mid_top   = $seat_no-$columns;
+	if(isset($seat_arrange[$mid_top])) {
+		$mid_top_seat_dept = $seat_arrange[$mid_top];
+	}else{
+		$mid_top_seat_dept = -1;
+	}
+
+	$mid_bottom= $seat_no+$columns;
+	if(isset($seat_arrange[$mid_bottom])) {
+		$mid_bottom_seat_dept = $seat_arrange[$mid_bottom];
+	}else{
+		$mid_bottom_seat_dept = -1;
+	}
+
+	$right_seat= $seat_no+1;
+	if(isset($seat_arrange[$right_seat])) {
+		$right_seat_dept = $seat_arrange[$right_seat];
+	}else{
+		$right_seat_dept = -1;
+	}
+
+	$right_top = $right_seat-$columns;
+	if(isset($seat_arrange[$right_top])) {
+		$right_top_seat_dept = $seat_arrange[$right_top];
+	}else{
+		$right_top_seat_dept = -1;
+	}
+
+	$right_bottom = $right_seat+$columns;
+	if(isset($seat_arrange[$right_bottom])) {
+		$right_bottom_seat_dept = $seat_arrange[$right_bottom];
+	}else{
+		$right_bottom_seat_dept = -1;
+	}
+	$selected_dept = selectDept($left_seat_dept,$left_top_seat_dept,$left_top_seat_dept,$mid_top_seat_dept,$mid_bottom_seat_dept,$right_seat_dept,$right_top_seat_dept,$right_bottom_seat_dept);
+
+	//check if exists in adjecent
+
+	$seat_arrange[$seat_no] = $selected_dept;
+	var_dump($seat_arrange);
+
+	return $selected_dept;
+}
+
+function selectDept($l,$lt,$mt,$mb,$r,$rt,$rb) {
+	$departments = ['1','2','3','4'];
+
+	$chk_depts = [];
+	$selected_departments = [$l,$lt,$mt,$mb,$r,$rt,$rb]; //print_r($selected_departments);
+
+	$chk_depts = array_diff($departments, $selected_departments);
+	//print_r($chk_depts); exit;
+	return $dept_id = array_rand($chk_depts);
+}
+?>
 </body>
 </html>
